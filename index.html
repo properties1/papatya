@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Senin İçin... 🌼</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: #111; /* Papatyanın renkleri öne çıksın diye koyu arka plan */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        #message {
+            position: absolute;
+            bottom: 10%;
+            color: white;
+            font-size: 20px;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 2s ease-in-out;
+            text-shadow: 0px 0px 10px rgba(255,255,255,0.8);
+            z-index: 10;
+            padding: 0 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="flowerCanvas"></canvas>
+    <!-- Buradaki mesajı istediğin gibi değiştirebilirsin -->
+    <div id="message">Ortak noktalarımızın güzelliğine... 🌼</div>
+
+    <script>
+        const canvas = document.getElementById('flowerCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2 - 50;
+        
+        let petalAngle = 0;
+        let centerRadius = 0;
+        let currentPetal = 0;
+        const totalPetals = 12; // Yaprak sayısı
+
+        function getRandomColor() {
+            const hues = [0, 45, 90, 140, 200, 280, 320]; // Rengarenk olması için renk paleti
+            const randomHue = hues[Math.floor(Math.random() * hues.length)];
+            return `hsl(${randomHue}, 90%, 65%)`;
+        }
+
+        function drawStem() {
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.quadraticCurveTo(centerX - 20, centerY + 100, centerX, canvas.height * 0.75);
+            ctx.strokeStyle = '#4CAF50';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+        }
+
+        function drawPetal(angle, color) {
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(angle);
+            
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            // Renkli çizgilerle yaprak formu oluşturma
+            ctx.bezierCurveTo(-30, -70, -40, -130, 0, -160);
+            ctx.bezierCurveTo(40, -130, 30, -70, 0, 0);
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function animate() {
+            if (currentPetal < totalPetals) {
+                // Her yaprağı farklı renkte çiz
+                const angle = (currentPetal * (Math.PI * 2)) / totalPetals;
+                const color = getRandomColor();
+                drawPetal(angle, color);
+                currentPetal++;
+                setTimeout(animate, 250); // Çizim hızı (250ms'de bir yaprak)
+            } else {
+                // Yapraklar bitince ortadaki sarı kısmı çiz
+                drawCenter();
+            }
+        }
+
+        function drawCenter() {
+            if (centerRadius < 35) {
+                centerRadius += 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFD700'; // Canlı sarı orta
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#FFA500';
+                ctx.stroke();
+                requestAnimationFrame(drawCenter);
+            } else {
+                // Her şey bitince aşağıdaki mesajı göster
+                document.getElementById('message').style.opacity = 1;
+            }
+        }
+
+        // Animasyonu başlat
+        setTimeout(() => {
+            drawStem();
+            animate();
+        }, 500);
+    </script>
+</body>
+</html>

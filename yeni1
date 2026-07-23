@@ -3,184 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sana Özel Bir Mesaj... ❤️</title>
+    <title>Senin İçin... 🌼</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
         body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
             overflow: hidden;
-            color: white;
-        }
-
-        /* Arka Plan Kalp Animasyonu */
-        .heart-particle {
-            position: absolute;
-            color: rgba(255, 105, 180, 0.4);
-            font-size: 20px;
-            animation: float 6s infinite linear;
-            z-index: 1;
-        }
-        @keyframes float {
-            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-        }
-
-        /* Zarf Container */
-        .card-container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            cursor: pointer;
-            perspective: 1000px;
-        }
-
-        .envelope {
-            width: 280px;
-            height: 180px;
-            background: #ff4b2b;
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            border-radius: 10px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+            background-color: #111; /* Papatyanın renkleri öne çıksın diye koyu arka plan */
             display: flex;
             justify-content: center;
             align-items: center;
-            transition: transform 0.6s ease;
-            position: relative;
+            height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        .envelope:hover {
-            transform: scale(1.05) rotate(-2deg);
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
         }
-
-        .envelope-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        /* Açılan Mektup Penceresi */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            width: 85%;
-            max-width: 420px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            z-index: 20;
+        #message {
+            position: absolute;
+            bottom: 10%;
+            color: white;
+            font-size: 20px;
             text-align: center;
             opacity: 0;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .modal.active {
-            display: block;
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .modal h2 {
-            color: #ff758c;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .modal p {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #f1f1f1;
-            margin-bottom: 20px;
-        }
-
-        .daisy-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            animation: spin 10s infinite linear;
-            display: inline-block;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-        .close-btn {
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            border: none;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
-            transition: opacity 0.3s;
-        }
-
-        .close-btn:hover {
-            opacity: 0.9;
+            transition: opacity 2s ease-in-out;
+            text-shadow: 0px 0px 10px rgba(255,255,255,0.8);
+            z-index: 10;
+            padding: 0 20px;
         }
     </style>
 </head>
 <body>
 
-    <!-- Zarf -->
-    <div class="card-container" onclick="openLetter()">
-        <div class="envelope">
-            <div class="envelope-text">Sana Bir Mesaj Var ✉️<br><small style="font-size: 0.8rem; opacity: 0.8;">(Tıkla ve Aç)</small></div>
-        </div>
-    </div>
-
-    <!-- Mektup İçeriği -->
-    <div class="modal" id="letterModal">
-        <div class="daisy-icon">🌼</div>
-        <h2>İyi Ki Varsın...</h2>
-        <p>
-            Daha önce kodlarla sana bir papatya çizmiştim... Ama fark ettim ki sen tek bir çiçek değil, benim hayatımdaki koca bir baharsın. ❤️
-            <br><br>
-            Aramızdaki mesafeler veya yoğunluklar ne olursa olsun, kalbimde çalışan en güzel algoritma hep seninle başlayan.
-        </p>
-        <button class="close-btn" onclick="closeLetter(event)">Seni Çok Seviyorum ✨</button>
-    </div>
+    <canvas id="flowerCanvas"></canvas>
+    <!-- Buradaki mesajı istediğin gibi değiştirebilirsin -->
+    <div id="message">Ortak noktalarımızın güzelliğine... 🌼</div>
 
     <script>
-        // Arka plan kalpleri oluşturma
-        function createHearts() {
-            for(let i = 0; i < 25; i++) {
-                let heart = document.createElement('div');
-                heart.className = 'heart-particle';
-                heart.innerHTML = '❤️';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                heart.style.delay = Math.random() * 2 + 's';
-                document.body.appendChild(heart);
+        const canvas = document.getElementById('flowerCanvas');
+        const ctx = canvas.getContext('2d');
+
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        const centerX = canvas.width / 2;
+        const centerY = canvas.height / 2 - 50;
+        
+        let petalAngle = 0;
+        let centerRadius = 0;
+        let currentPetal = 0;
+        const totalPetals = 12; // Yaprak sayısı
+
+        function getRandomColor() {
+            const hues = [0, 45, 90, 140, 200, 280, 320]; // Rengarenk olması için renk paleti
+            const randomHue = hues[Math.floor(Math.random() * hues.length)];
+            return `hsl(${randomHue}, 90%, 65%)`;
+        }
+
+        function drawStem() {
+            ctx.beginPath();
+            ctx.moveTo(centerX, centerY);
+            ctx.quadraticCurveTo(centerX - 20, centerY + 100, centerX, canvas.height * 0.75);
+            ctx.strokeStyle = '#4CAF50';
+            ctx.lineWidth = 5;
+            ctx.stroke();
+        }
+
+        function drawPetal(angle, color) {
+            ctx.save();
+            ctx.translate(centerX, centerY);
+            ctx.rotate(angle);
+            
+            ctx.beginPath();
+            ctx.moveTo(0, 0);
+            // Renkli çizgilerle yaprak formu oluşturma
+            ctx.bezierCurveTo(-30, -70, -40, -130, 0, -160);
+            ctx.bezierCurveTo(40, -130, 30, -70, 0, 0);
+            
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 3;
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        function animate() {
+            if (currentPetal < totalPetals) {
+                // Her yaprağı farklı renkte çiz
+                const angle = (currentPetal * (Math.PI * 2)) / totalPetals;
+                const color = getRandomColor();
+                drawPetal(angle, color);
+                currentPetal++;
+                setTimeout(animate, 250); // Çizim hızı (250ms'de bir yaprak)
+            } else {
+                // Yapraklar bitince ortadaki sarı kısmı çiz
+                drawCenter();
             }
         }
 
-        function openLetter() {
-            document.getElementById('letterModal').classList.add('active');
+        function drawCenter() {
+            if (centerRadius < 35) {
+                centerRadius += 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, centerRadius, 0, Math.PI * 2);
+                ctx.fillStyle = '#FFD700'; // Canlı sarı orta
+                ctx.fill();
+                ctx.lineWidth = 2;
+                ctx.strokeStyle = '#FFA500';
+                ctx.stroke();
+                requestAnimationFrame(drawCenter);
+            } else {
+                // Her şey bitince aşağıdaki mesajı göster
+                document.getElementById('message').style.opacity = 1;
+            }
         }
 
-        function closeLetter(e) {
-            e.stopPropagation();
-            document.getElementById('letterModal').classList.remove('active');
-        }
-
-        createHearts();
+        // Animasyonu başlat
+        setTimeout(() => {
+            drawStem();
+            animate();
+        }, 500);
     </script>
 </body>
 </html>

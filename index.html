@@ -1,186 +1,190 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sana Özel Bir Mesaj... ❤️</title>
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        body {
-            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            overflow: hidden;
-            color: white;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Papatyam</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        /* Arka Plan Kalp Animasyonu */
-        .heart-particle {
-            position: absolute;
-            color: rgba(255, 105, 180, 0.4);
-            font-size: 20px;
-            animation: float 6s infinite linear;
-            z-index: 1;
-        }
-        @keyframes float {
-            0% { transform: translateY(100vh) scale(0.5); opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1.2); opacity: 0; }
-        }
+    body {
+      background-color: #0d0e15;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-        /* Zarf Container */
-        .card-container {
-            position: relative;
-            z-index: 10;
-            text-align: center;
-            cursor: pointer;
-            perspective: 1000px;
-        }
+    #canvas-container {
+      position: relative;
+      width: 100vw;
+      height: 100vh;
+    }
 
-        .envelope {
-            width: 280px;
-            height: 180px;
-            background: #ff4b2b;
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            border-radius: 10px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: transform 0.6s ease;
-            position: relative;
-        }
-
-        .envelope:hover {
-            transform: scale(1.05) rotate(-2deg);
-        }
-
-        .envelope-text {
-            font-size: 1.2rem;
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        /* Açılan Mektup Penceresi */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            width: 85%;
-            max-width: 420px;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(15px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            z-index: 20;
-            text-align: center;
-            opacity: 0;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .modal.active {
-            display: block;
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
-
-        .modal h2 {
-            color: #ff758c;
-            margin-bottom: 15px;
-            font-size: 1.8rem;
-        }
-
-        .modal p {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #f1f1f1;
-            margin-bottom: 20px;
-        }
-
-        .daisy-icon {
-            font-size: 2.5rem;
-            margin-bottom: 10px;
-            animation: spin 10s infinite linear;
-            display: inline-block;
-        }
-
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
-
-        .close-btn {
-            background: linear-gradient(to right, #ff416c, #ff4b2b);
-            border: none;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 65, 108, 0.4);
-            transition: opacity 0.3s;
-        }
-
-        .close-btn:hover {
-            opacity: 0.9;
-        }
-    </style>
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+  </style>
 </head>
 <body>
 
-    <!-- Zarf -->
-    <div class="card-container" onclick="openLetter()">
-        <div class="envelope">
-            <div class="envelope-text">Sana Bir Mesaj Var ✉️<br><small style="font-size: 0.8rem; opacity: 0.8;">(Tıkla ve Aç)</small></div>
-        </div>
-    </div>
+  <div id="canvas-container">
+    <canvas id="mainCanvas"></canvas>
+  </div>
 
-    <!-- Mektup İçeriği -->
-    <div class="modal" id="letterModal">
-        <div class="daisy-icon">🌼</div>
-        <h2>İyi Ki Varsın...</h2>
-        <p>
-            Daha önce kodlarla sana bir papatya çizmiştim... Ama fark ettim ki sen tek bir çiçek değil, benim hayatımdaki koca bir baharsın. ❤️
-            <br><br>
-            Aramızdaki mesafeler veya yoğunluklar ne olursa olsun, kalbimde çalışan en güzel algoritma hep seninle başlayan.
-        </p>
-        <button class="close-btn" onclick="closeLetter(event)">Seni Çok Seviyorum ✨</button>
-    </div>
+  <!-- Havai Fişek Efekti İçin Canvas Confetti Kütüphanesi -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-    <script>
-        // Arka plan kalpleri oluşturma
-        function createHearts() {
-            for(let i = 0; i < 25; i++) {
-                let heart = document.createElement('div');
-                heart.className = 'heart-particle';
-                heart.innerHTML = '❤️';
-                heart.style.left = Math.random() * 100 + 'vw';
-                heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-                heart.style.delay = Math.random() * 2 + 's';
-                document.body.appendChild(heart);
-            }
+  <script>
+    const canvas = document.getElementById('mainCanvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    // Animasyon Parametreleri
+    let progress = 0;
+    const speed = 0.008; // Çizim hızı
+
+    function drawScene() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      const centerX = canvas.width / 2;
+      const centerY = canvas.height / 2;
+      const scale = Math.min(canvas.width / 800, canvas.height / 600);
+
+      // --- 1. Renkli "Papatyam" Yazısı ---
+      ctx.save();
+      ctx.font = `bold ${60 * scale}px cursive, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+
+      // Rengarenk Çizgi / Gradient Efekti
+      const gradient = ctx.createLinearGradient(centerX - 200 * scale, 0, centerX + 200 * scale, 0);
+      gradient.addColorStop(0, '#ff4e50');
+      gradient.addColorStop(0.2, '#f9d423');
+      gradient.addColorStop(0.4, '#e1eec3');
+      gradient.addColorStop(0.6, '#f05f57');
+      gradient.addColorStop(0.8, '#36d1dc');
+      gradient.addColorStop(1, '#5b86e5');
+
+      ctx.strokeStyle = gradient;
+      ctx.lineWidth = 3 * scale;
+
+      // Yazının çizilme simülasyonu
+      const textProgress = Math.min(progress * 2, 1);
+      if (textProgress > 0) {
+        ctx.setLineDash([400 * textProgress, 400]);
+        ctx.strokeText("Papatyam", centerX - 60 * scale, centerY);
+        
+        // Dolgu rengi yavaşça belirsin
+        ctx.fillStyle = `rgba(255, 255, 255, ${textProgress * 0.9})`;
+        ctx.fillText("Papatyam", centerX - 60 * scale, centerY);
+      }
+      ctx.restore();
+
+      // --- 2. Papatya Çizimi ---
+      const flowerProgress = Math.max(0, (progress - 0.5) * 2);
+      if (flowerProgress > 0) {
+        const flowerX = centerX + 180 * scale;
+        const flowerY = centerY;
+        const petalCount = 12;
+        const maxPetalRadius = 35 * scale;
+        const centerRadius = 15 * scale;
+
+        // Yeşil Dal
+        ctx.beginPath();
+        ctx.strokeStyle = '#4CAF50';
+        ctx.lineWidth = 4 * scale;
+        ctx.moveTo(flowerX, flowerY);
+        ctx.quadraticCurveTo(flowerX + 10 * scale, flowerY + 50 * scale, flowerX, flowerY + 100 * scale);
+        ctx.stroke();
+
+        // Yapraklar
+        for (let i = 0; i < petalCount; i++) {
+          const angle = (i * 2 * Math.PI) / petalCount;
+          const currentPetalLength = maxPetalRadius * Math.min(flowerProgress * 1.5, 1);
+
+          ctx.save();
+          ctx.translate(flowerX, flowerY);
+          ctx.rotate(angle);
+
+          ctx.beginPath();
+          ctx.ellipse(currentPetalLength / 2, 0, currentPetalLength / 2, 8 * scale, 0, 0, 2 * Math.PI);
+          ctx.fillStyle = '#FFFFFF';
+          ctx.fill();
+          ctx.strokeStyle = '#E0E0E0';
+          ctx.lineWidth = 1;
+          ctx.stroke();
+
+          ctx.restore();
         }
 
-        function openLetter() {
-            document.getElementById('letterModal').classList.add('active');
+        // Orta Sarı Göbek
+        if (flowerProgress > 0.3) {
+          ctx.beginPath();
+          ctx.arc(flowerX, flowerY, centerRadius * Math.min((flowerProgress - 0.3) * 1.4, 1), 0, 2 * Math.PI);
+          ctx.fillStyle = '#FFD700';
+          ctx.fill();
+          ctx.strokeStyle = '#FFA500';
+          ctx.lineWidth = 2 * scale;
+          ctx.stroke();
+        }
+      }
+
+      // Döngü veya Bitiş Kontrolü
+      if (progress < 1) {
+        progress += speed;
+        requestAnimationFrame(drawScene);
+      } else {
+        triggerFireworks();
+      }
+    }
+
+    // --- 3. Havai Fişek Efekti ---
+    let fireworksTriggered = false;
+    function triggerFireworks() {
+      if (fireworksTriggered) return;
+      fireworksTriggered = true;
+
+      const duration = 4 * 1000;
+      const animationEnd = Date.now() + duration;
+
+      const interval = setInterval(function() {
+        const timeLeft = animationEnd - Date.now();
+
+        if (timeLeft <= 0) {
+          return clearInterval(interval);
         }
 
-        function closeLetter(e) {
-            e.stopPropagation();
-            document.getElementById('letterModal').classList.remove('active');
-        }
+        const particleCount = 50 * (timeLeft / duration);
 
-        createHearts();
-    </script>
+        confetti({
+          particleCount,
+          startVelocity: 30,
+          spread: 360,
+          ticks: 60,
+          origin: { x: Math.random(), y: Math.random() - 0.2 }
+        });
+      }, 250);
+    }
+
+    // Başlat
+    drawScene();
+  </script>
 </body>
 </html>
